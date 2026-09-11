@@ -1433,9 +1433,6 @@ local function ToggleParticles(enabled)
     end
 end
 
--- ============================================================
--- AUTO GUN LOOTER
--- ============================================================
 local GunLooterConnection = nil
 local LastLootTime = 0
 local LOOT_COOLDOWN = 0.15
@@ -1593,9 +1590,6 @@ local function ToggleAutoGunLooter(enabled)
     end
 end
 
--- ============================================================
--- KILL ALL
--- ============================================================
 local KillAllRunning = false
 
 local function GetKnifeTool(char)
@@ -1678,9 +1672,6 @@ local function ToggleKillAll(enabled)
     end
 end
 
--- ============================================================
--- CHOOSE MAP 100x (для MM2)
--- ============================================================
 local ChooseMapRunning = false
 
 local function FindAllVotePads()
@@ -1930,9 +1921,6 @@ local function Toggle100ChooseMap(enabled)
     end
 end
 
--- ============================================================
--- FLY
--- ============================================================
 local FlyBV = nil
 local FlyBG = nil
 local FlyConnection = nil
@@ -1991,9 +1979,6 @@ local function ToggleFly(enabled)
     end
 end
 
--- ============================================================
--- NOCLIP
--- ============================================================
 local NoClipConnection = nil
 
 local function ToggleNoClip(enabled)
@@ -2033,9 +2018,6 @@ local function ToggleNoClip(enabled)
     end
 end
 
--- ============================================================
--- LOCK MOUSE
--- ============================================================
 local function ToggleLockMouse(enabled)
     Settings.LockMouse = enabled
     if enabled then
@@ -2045,9 +2027,6 @@ local function ToggleLockMouse(enabled)
     end
 end
 
--- ============================================================
--- FOV + AIMBOT
--- ============================================================
 local FOVCircle = Drawing.new("Circle")
 FOVCircle.Thickness = 2
 FOVCircle.Radius = 100
@@ -2113,9 +2092,6 @@ RunService.RenderStepped:Connect(function()
     end
 end)
 
--- ============================================================
--- СИСТЕМА КАРТОЧЕК
--- ============================================================
 local AllCards = {}
 
 local function ApplyCardGradient(card)
@@ -2376,26 +2352,18 @@ local function CreateBindCard(category, name, callback, accessLevel)
     return card
 end
 
--- MAIN
 CreateCard("Main", "AutoGunLooter", false, ToggleAutoGunLooter, "premium")
 CreateCard("Main", "KillAll", false, ToggleKillAll, "premium")
-
--- CHOOSE MAP (только для ADMIN)
 CreateCard("ChooseMap", "100 Choose Map", false, Toggle100ChooseMap, "admin")
-
--- LEGIT
 CreateCard("Legit", "AimBot", false, ToggleAimBot)
 CreateCard("Legit", "AimBot Only Murderer", false, function(s) Settings.AimBotOnlyMurderer = s end)
 CreateCard("Legit", "AimBot Wall Check", true, function(s) Settings.AimBotWallCheck = s end)
 CreateSliderCard("Legit", "AimBot FOV", 50, 300, 100, function(v) Settings.AimBotFOV = v FOVCircle.Radius = v end)
 CreateSliderCard("Legit", "AimBot Prediction", 0, 100, 50, function(v) Settings.AimBotPrediction = v end)
 CreateCard("Legit", "Lock Mouse", false, ToggleLockMouse)
-
--- RAGE
 CreateCard("Rage", "Fly", false, ToggleFly)
 CreateCard("Rage", "NoClip", false, ToggleNoClip)
 
--- VISUALS
 CreateCard("Visuals", "Player ESP", false, function(s)
     Settings.PlayerESP = s
     if s then UpdateAllVisuals() else ClearAllESP() end
@@ -2429,7 +2397,6 @@ CreateSliderCard("Visuals", "Aura Type (1=Fire 2=Ice 3=Bolt)", 1, 3, 1, function
 end)
 CreateCard("Visuals", "Particles", false, ToggleParticles)
 
--- WEBHOOK
 CreateCard("WebHook", "MurderNotification", false, function(s)
     Settings.MurderNotification = s
     if not s then NotifiedPlayers.Murderer = {} end
@@ -2439,15 +2406,11 @@ CreateCard("WebHook", "SheriffNotification", false, function(s)
     if not s then NotifiedPlayers.Sheriff = {} end
 end)
 
--- BINDS
 CreateBindCard("Binds", "Fly Key", function(key) Settings.FlyKey = key end)
 CreateBindCard("Binds", "NoClip Key", function(key) Settings.NoClipKey = key end)
 CreateBindCard("Binds", "AimBot Key", function(key) Settings.AimBotKey = key end)
 CreateBindCard("Binds", "Lock Mouse Key", function(key) Settings.LockMouseKey = key end)
 
--- ============================================================
--- УПРАВЛЕНИЕ КАТЕГОРИЯМИ
--- ============================================================
 local CurrentCategory = "Main"
 local CategoryButtons = {}
 
@@ -2581,34 +2544,5 @@ UserInputService.InputBegan:Connect(function(input, gp)
         if isOpen then CloseGUI() else OpenGUI() end
     end
 end)
-
-local function Cleanup()
-    ClearAllESP()
-    ClearAllNameTags()
-    if FlyBV then FlyBV:Destroy() end
-    if FlyBG then FlyBG:Destroy() end
-    if FlyConnection then FlyConnection:Disconnect() end
-    if NoClipConnection then NoClipConnection:Disconnect() end
-    if AimBotConnection then AimBotConnection:Disconnect() end
-    if FOVCircle then FOVCircle:Remove() end
-    if BlurEffect then BlurEffect:Destroy() end
-    if CurrentSky then CurrentSky:Destroy() end
-    if ShaderDOF then ShaderDOF:Destroy() end
-    if UltraBloom then UltraBloom:Destroy() end
-    if UltraCC then UltraCC:Destroy() end
-    if UltraSun then UltraSun:Destroy() end
-    if UltraAtmo then UltraAtmo:Destroy() end
-    if AuraConnection then AuraConnection:Disconnect() end
-    ClearAura()
-    if ParticleConnection then ParticleConnection:Disconnect() end
-    ClearParticles()
-    if GunLooterConnection then GunLooterConnection:Disconnect() end
-    Settings.KillAll = false
-    Settings.ChooseMap100 = false
-    UserInputService.MouseBehavior = Enum.MouseBehavior.Default
-    ScreenGui:Destroy()
-end
-
-LocalPlayer.OnDestroying:Connect(Cleanup)
 
 print("MegolaHub PREMIUM загружен! Нажмите RightShift для открытия GUI.")
